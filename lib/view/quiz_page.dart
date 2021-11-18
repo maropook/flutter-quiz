@@ -6,12 +6,12 @@ import 'package:quiz/view/result_page.dart';
 
 class QuizApp extends StatelessWidget {
   QuizApp({Key? key}) : super(key: key);
-  late List<Quiz> quizList;
+  late List<Map> quizList;
 
   Future<void> goToQuizApp(BuildContext context) async {
     quizList = shuffle(await getCsvData('assets/quiz1.csv'));
-    for (Quiz row in quizList) {
-      debugPrint(row.question);
+    for (Map row in quizList) {
+      debugPrint(row["question"]);
     }
 
     Navigator.push(
@@ -43,14 +43,14 @@ class QuizApp extends StatelessWidget {
 
 class QuizPage extends StatefulWidget {
   QuizPage(this.quizList, {Key? key}) : super(key: key);
-  List<Quiz> quizList;
+  List<Map> quizList;
 
   @override
   State<QuizPage> createState() => QuizPageState();
 }
 
 class QuizPageState extends State<QuizPage> {
-  late List<Quiz> quizList;
+  late List<Map> quizList;
   int index = 0;
   int result = 0;
   bool isSelectNow = true;
@@ -65,7 +65,7 @@ class QuizPageState extends State<QuizPage> {
     setState(() {
       isSelectNow = false;
     });
-    if (quizList[index].answer == selectAnswer) {
+    if (quizList[index]["answer"] == selectAnswer) {
       result++;
     }
 
@@ -94,47 +94,24 @@ class QuizPageState extends State<QuizPage> {
               child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(quizList[index].question),
-                TextButton(
-                    onPressed: () async {
-                      if (!isSelectNow) return;
-                      await updateQuiz(context, 1);
+                Text(quizList[index]['question']),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: quizList.length - 1,
+                    itemBuilder: (context, key) {
+                      return TextButton(
+                          onPressed: () async {
+                            if (!isSelectNow) return;
+                            await updateQuiz(context, key);
+                          },
+                          child: isSelectNow
+                              ? Text(quizList[index]["select$key"])
+                              : quizList[index]["answer"] == key
+                                  ? Text(quizList[index]["select$key"] + "○")
+                                  : Text(quizList[index]["select$key"] + "×"));
                     },
-                    child: isSelectNow
-                        ? Text(quizList[index].select1)
-                        : quizList[index].answer == 1
-                            ? Text(quizList[index].select1 + "○")
-                            : Text(quizList[index].select1 + "×")),
-                TextButton(
-                    onPressed: () async {
-                      if (!isSelectNow) return;
-                      await updateQuiz(context, 2);
-                    },
-                    child: isSelectNow
-                        ? Text(quizList[index].select2)
-                        : quizList[index].answer == 2
-                            ? Text(quizList[index].select2 + "○")
-                            : Text(quizList[index].select2 + "×")),
-                TextButton(
-                    onPressed: () async {
-                      if (!isSelectNow) return;
-                      await updateQuiz(context, 3);
-                    },
-                    child: isSelectNow
-                        ? Text(quizList[index].select3)
-                        : quizList[index].answer == 3
-                            ? Text(quizList[index].select3 + "○")
-                            : Text(quizList[index].select3 + "×")),
-                TextButton(
-                    onPressed: () async {
-                      if (!isSelectNow) return;
-                      await updateQuiz(context, 4);
-                    },
-                    child: isSelectNow
-                        ? Text(quizList[index].select4)
-                        : quizList[index].answer == 4
-                            ? Text(quizList[index].select4 + "○")
-                            : Text(quizList[index].select4 + "×")),
+                  ),
+                )
               ],
             ))
           : Container(),

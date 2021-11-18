@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:quiz/model/quiz.dart';
 
-Future<List<Quiz>> getCsvData(String path) async {
-  List<Quiz> quizList = [];
+Future<List<Map>> getCsvData(String path) async {
+  List<Map> quizList = [];
   String csv = await rootBundle.loadString(path);
   for (String line in csv.split("\n")) {
     if (quizList.length + 1 == csv.split("\n").length) {
@@ -17,7 +17,8 @@ Future<List<Quiz>> getCsvData(String path) async {
       rows[4],
       rows[5],
     );
-    quizList.add(quiz);
+
+    quizList.add(quiz.toMap());
   }
   return quizList;
 }
