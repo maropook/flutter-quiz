@@ -12,7 +12,7 @@ class Result extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (result * 100 ~/ quizNumber) {
+    switch (result.round() * 100 ~/ quizNumber) {
       case 60:
         comment = "まあまあ";
         break;

@@ -1,45 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz/service/load_csv.dart';
-import 'package:quiz/model/quiz.dart';
-import 'package:quiz/service/suffle.dart';
 import 'package:quiz/view/result_page.dart';
-
-class QuizApp extends StatelessWidget {
-  QuizApp({Key? key}) : super(key: key);
-  late List<Map> quizList;
-
-  Future<void> goToQuizApp(BuildContext context) async {
-    quizList = shuffle(await getCsvData('assets/quiz1.csv'));
-    for (Map row in quizList) {
-      debugPrint(row["question"]);
-    }
-
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => QuizPage(quizList)));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          //Columnの中に入れたものは縦に並べられる．Rowだと横に並べられる
-          mainAxisAlignment: MainAxisAlignment.center, //Coloumの中身を真ん中に配置
-          children: <Widget>[
-            const Text(
-              'クイズ',
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  goToQuizApp(context); //クイズアプリへ遷移するQuizApp関数がよばれる
-                },
-                child: const Text('スタート')),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class QuizPage extends StatefulWidget {
   QuizPage(this.quizList, {Key? key}) : super(key: key);
@@ -90,30 +50,36 @@ class QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: index < quizList.length
-          ? Center(
-              child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(quizList[index]['question']),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: quizList.length - 1,
-                    itemBuilder: (context, key) {
-                      return TextButton(
-                          onPressed: () async {
-                            if (!isSelectNow) return;
-                            await updateQuiz(context, key);
-                          },
-                          child: isSelectNow
-                              ? Text(quizList[index]["select$key"])
-                              : quizList[index]["answer"] == key
-                                  ? Text(quizList[index]["select$key"] + "○")
-                                  : Text(quizList[index]["select$key"] + "×"));
-                    },
+          ? CustomScrollView(
+              slivers: <Widget>[
+                SliverList(
+                    delegate: SliverChildListDelegate([
+                  Padding(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height / 3)),
+                  Text(
+                    quizList[index]['question'],
+                    textAlign: TextAlign.center,
                   ),
-                )
+                ])),
+                SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                  (context, key) {
+                    return TextButton(
+                        onPressed: () async {
+                          if (!isSelectNow) return;
+                          await updateQuiz(context, key);
+                        },
+                        child: isSelectNow
+                            ? Text(quizList[index]["select$key"])
+                            : quizList[index]["answer"] == key
+                                ? Text(quizList[index]["select$key"] + "○")
+                                : Text(quizList[index]["select$key"] + "×"));
+                  },
+                  childCount: 4,
+                )),
               ],
-            ))
+            )
           : Container(),
     );
   }
