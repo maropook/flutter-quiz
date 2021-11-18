@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:quiz/quiz.dart';
+import 'package:quiz/model/quiz.dart';
 
 Future<List<Quiz>> getCsvData(String path) async {
   List<Quiz> quizList = [];

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:quiz/quiz.dart';
+import 'package:quiz/model/quiz.dart';
 
 List<Quiz> shuffle(List<Quiz> items) {
   var random = Random();
