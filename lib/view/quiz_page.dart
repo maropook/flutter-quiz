@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz/service/load_csv.dart';
 import 'package:quiz/model/quiz.dart';
 import 'package:quiz/service/suffle.dart';
+import 'package:quiz/view/result_page.dart';
 
 class QuizApp extends StatelessWidget {
   QuizApp({Key? key}) : super(key: key);
@@ -13,8 +14,8 @@ class QuizApp extends StatelessWidget {
       debugPrint(row.question);
     }
 
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => MainQuizApp(quizList)));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => QuizPage(quizList)));
   }
 
   @override
@@ -26,13 +27,13 @@ class QuizApp extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center, //Coloumの中身を真ん中に配置
           children: <Widget>[
             const Text(
-              'ボタンを押せ',
+              'クイズ',
             ),
             ElevatedButton(
                 onPressed: () {
                   goToQuizApp(context); //クイズアプリへ遷移するQuizApp関数がよばれる
                 },
-                child: const Text('クイズアプリへ')),
+                child: const Text('スタート')),
           ],
         ),
       ),
@@ -40,15 +41,15 @@ class QuizApp extends StatelessWidget {
   }
 }
 
-class MainQuizApp extends StatefulWidget {
-  MainQuizApp(this.quizList, {Key? key}) : super(key: key);
+class QuizPage extends StatefulWidget {
+  QuizPage(this.quizList, {Key? key}) : super(key: key);
   List<Quiz> quizList;
 
   @override
-  State<MainQuizApp> createState() => MainQuizAppState();
+  State<QuizPage> createState() => QuizPageState();
 }
 
-class MainQuizAppState extends State<MainQuizApp> {
+class QuizPageState extends State<QuizPage> {
   late List<Quiz> quizList;
   int index = 0;
   int result = 0;
@@ -91,6 +92,7 @@ class MainQuizAppState extends State<MainQuizApp> {
       body: index < quizList.length
           ? Center(
               child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(quizList[index].question),
                 TextButton(
@@ -136,56 +138,6 @@ class MainQuizAppState extends State<MainQuizApp> {
               ],
             ))
           : Container(),
-    );
-  }
-}
-
-class Result extends StatelessWidget {
-  Result(this.result, this.quizNumber, {Key? key}) : super(key: key);
-  int result;
-  int quizNumber;
-  late String comment;
-  @override
-  Widget build(BuildContext context) {
-    switch (result * 10 ~/ quizNumber) {
-      case 6:
-        comment = "まあまあ";
-        break;
-      case 7:
-        comment = "まあまあ";
-        break;
-      case 8:
-        comment = "いいね";
-        break;
-      case 9:
-        comment = "すごい";
-        break;
-      case 10:
-        comment = "よくできました";
-        break;
-      default:
-        comment = "頑張りましょう";
-        break;
-    }
-    print("${result / quizNumber * 10}");
-
-    return Scaffold(
-      body: Center(
-        child: Column(
-          //Columnの中に入れたものは縦に並べられる．Rowだと横に並べられる
-          mainAxisAlignment: MainAxisAlignment.center, //Coloumの中身を真ん中に配置
-          children: <Widget>[
-            Text(
-              comment,
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  //クイズアプリへ遷移するQuizApp関数がよばれる
-                },
-                child: Text('$result')),
-          ],
-        ),
-      ),
     );
   }
 }
