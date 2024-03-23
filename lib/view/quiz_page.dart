@@ -13,7 +13,7 @@ class QuizPageState extends State<QuizPage> {
   late List<Map> quizList;
   int index = 0;
   int result = 0;
-  bool isSelectNow = true;
+  bool isSelectNow = true; //答えをボタンを押す前がtrue
 
   @override
   void initState() {
@@ -30,9 +30,10 @@ class QuizPageState extends State<QuizPage> {
     }
 
     await Future.delayed(const Duration(seconds: 1));
-    isSelectNow = true;
-    setState(() {});
-    index++;
+    setState(() {
+      isSelectNow = true;
+      index++;
+    });
     if (index == quizList.length) {
       await goToResult(context);
     }
@@ -71,10 +72,13 @@ class QuizPageState extends State<QuizPage> {
                           await updateQuiz(context, key);
                         },
                         child: isSelectNow
-                            ? Text(quizList[index]["select$key"])
+                            ? Text(quizList[index]
+                                ["select$key"]) //isSelectNowがtrueなら
                             : quizList[index]["answer"] == key
-                                ? Text(quizList[index]["select$key"] + "○")
-                                : Text(quizList[index]["select$key"] + "×"));
+                                ? Text(quizList[index]["select$key"] +
+                                    "○") //isSelectNowがfalseで答えと一緒なら
+                                : Text(quizList[index]["select$key"] +
+                                    "×")); //isSelectNowがfalseで答えと違うなら
                   },
                   childCount: 4,
                 )),

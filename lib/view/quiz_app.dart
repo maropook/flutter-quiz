@@ -8,7 +8,8 @@ class QuizApp extends StatelessWidget {
   late List<Map> quizList;
 
   Future<void> goToQuizApp(BuildContext context) async {
-    quizList = shuffle(await getCsvData('assets/quiz1.csv'));
+    quizList = shuffle(
+        await getCsvData('assets/quiz1.csv')); //csvファイルからクイズを読み取り，シャッフルして配列に代入，
     for (Map row in quizList) {
       debugPrint(row["question"]);
     }
